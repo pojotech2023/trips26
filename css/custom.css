@@ -1,0 +1,132 @@
+.nav-link.active {
+    color: #000 !important;
+}
+
+.btn-outline-light {
+    color: #000;
+    border-color: #000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.main-text {
+    margin-right: 5px;
+    color: #ffd302;
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    align-items: flex-start;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.main-text {
+    font-size: 28px;
+    color: #ffd302;
+}
+
+.sub-text {
+    display: flex;
+    align-items: center;
+}
+
+.box {
+    background-color: #ffd302;
+    color: #000;
+    padding: 3px 25px;
+    border-radius: 3px;
+    font-size: 24px;
+}
+
+.dot {
+    font-size: 18px;
+    color: #000;
+    position: absolute;
+    right: -25px;
+    /* Adjust the position */
+    bottom: 10px;
+    writing-mode: vertical-rl;
+    /* Rotates .com vertically */
+    transform: rotate(180deg);
+    /* Reverses the text */
+}
+
+@media (min-width: 992px) {
+    .sticky-top.navbar-dark {
+        .main-text {
+            font-size: 28px;
+            color: #ffd302;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .main-text {
+        color: #ffd302;
+    }
+}
+.blog-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.blog-img {
+    height: 200px; /* Set a fixed height for images */
+    overflow: hidden;
+}
+
+.blog-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the area without stretching */
+}
+
+.blog-item .p-4 {
+    flex-grow: 1; /* Makes the text content take up the remaining space */
+   
+    flex-direction: column;
+    justify-content: center; /* Centers text content */
+}
+/* floating action button whatsapp */
+.fab-whatsapp {
+    position: fixed;
+    bottom: 125px;
+    right: 50px;
+    background-color: #25d366;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fab-whatsapp img {
+    width: 50px;
+    height: 50px;
+}
+
+.fab-whatsapp:hover {
+    background-color: #128c7e;
+    /* Darker green on hover */
+}
+/* .carousel-caption{
+    background: none !important;
+} */
