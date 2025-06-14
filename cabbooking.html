@@ -102,14 +102,14 @@
       }
 
       /* Section background */
-      section.bg-light {
+      .cabbokking.bg-light {
         background-color: #fff !important;
         padding-top: 80px;
         padding-bottom: 80px;
       }
 
       /* Container */
-      .container {
+      .cabbokking .container {
         background-color: #fff;
         border-radius: 16px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -311,6 +311,8 @@
       </div>
     </div>
     <!-- Navbar End -->
+
+       <!-- Cabbooking Start-->
 
     <section class="bg-light mt-5 pt-5">
       <div
@@ -595,6 +597,8 @@
               <input type="time" name="time" required />
             </div>
 
+                 <div id="fare-estimate" class="alert  mt-4" style="display: none;"></div>
+
             <button type="submit" class="btn lnk btn-main bg-btn">
               <span class="circle"></span>BOOK
             </button>
@@ -603,6 +607,8 @@
         </div>
       </div>
     </section>
+
+    <!-- Cabbooking end-->
 
     
 <!-- Footer Start -->
@@ -693,7 +699,11 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"
       ><i class="bi bi-arrow-up"></i
     ></a>
-<script>
+
+ <script>
+  let pickupCoords = null;
+  let dropCoords = null;
+
   function initializeAutocomplete() {
     const pickupInput = document.getElementById("pickup");
     const dropInput = document.getElementById("drop");
@@ -702,19 +712,71 @@
       types: ["geocode"],
     });
 
-    pickupAutocomplete.addListener("place_changed", () => {
-      const place = pickupAutocomplete.getPlace();
-      console.log("Pickup Place:", place);
-    });
-
     const dropAutocomplete = new google.maps.places.Autocomplete(dropInput, {
       types: ["geocode"],
     });
 
+    pickupAutocomplete.addListener("place_changed", () => {
+      const place = pickupAutocomplete.getPlace();
+      if (!place.geometry) return;
+
+      pickupCoords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+      calculateDistanceAndFare();
+    });
+
     dropAutocomplete.addListener("place_changed", () => {
       const place = dropAutocomplete.getPlace();
-      console.log("Drop Place:", place);
+      if (!place.geometry) return;
+
+      dropCoords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+      calculateDistanceAndFare();
     });
+  }
+
+  function calculateDistanceAndFare() {
+    if (!pickupCoords || !dropCoords) return;
+
+    const origin = new google.maps.LatLng(pickupCoords.lat, pickupCoords.lng);
+    const destination = new google.maps.LatLng(dropCoords.lat, dropCoords.lng);
+
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [origin],
+        destinations: [destination],
+        travelMode: "DRIVING",
+        unitSystem: google.maps.UnitSystem.METRIC,
+      },
+      (response, status) => {
+        if (status === "OK") {
+          const element = response.rows[0].elements[0];
+          if (element.status === "OK") {
+            const distanceText = element.distance.text;
+            const distanceValue = element.distance.value / 1000; // in KM
+            const durationText = element.duration.text;
+
+            const ratePerKm = 15; // your custom rate per KM
+            const estimatedFare = Math.round(distanceValue * ratePerKm);
+
+            const label = document.getElementById("fare-estimate");
+            label.innerHTML = `<strong>Approx. Distance:</strong> ${distanceText}<br>
+              <strong>Approx. Duration:</strong> ${durationText}<br>
+              <strong>Estimated Fare:</strong> ₹${estimatedFare}`;
+            label.style.display = "block";
+          } else {
+            alert("No route found.");
+          }
+        } else {
+          alert("Distance Matrix error: " + status);
+        }
+      }
+    );
   }
 
   function toggleFields() {
@@ -758,7 +820,6 @@
 
     const form = event.target;
 
-    // Get all form values
     const pick = form.pick.value;
     const drop = form.drop.value;
     const name = form.name.value;
@@ -771,7 +832,6 @@
     const days = form.days?.value || "";
     const hourPackage = form.hourPackage?.value || "";
 
-    // Build WhatsApp message
     let message = `*Cab Booking Request*%0A`;
     message += `*Name:* ${name}%0A`;
     message += `*Phone:* ${phone}%0A`;
@@ -794,14 +854,12 @@
     message += `*Date:* ${date}%0A`;
     message += `*Time:* ${time}%0A`;
 
-    // WhatsApp number in international format (without +)
-    const whatsappNumber = "919797977763"; // 🔁 Replace with your WhatsApp number
-
-    // Open WhatsApp with the message
+    const whatsappNumber = "919797977763";
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
     window.open(whatsappURL, "_blank");
   }
 </script>
+
 
 
     <!-- JavaScript Libraries -->
