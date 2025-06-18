@@ -568,6 +568,19 @@
                   />Choose Trip Type</label
                 >
                 <div class="d-flex justify-content-between flex-wrap" style="width: 55% !important;">
+                   <div class="d-flex align-items-center">
+                    <input
+                      type="radio"
+                      name="tripType"
+                      id="BookNow"
+                      value="Book Now"
+                      class="me-1 mt-3"
+                      onclick="toggleFields()"
+                      required
+                      style="width: 12% !important;"
+                    />
+                    <label for="Outstation" class="mb-0">Book Now</label>
+                  </div>
                   <div class="d-flex align-items-center">
                     <input
                       type="radio"
@@ -686,7 +699,7 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="dateField">
               <span></span>
               <label class="fw-bold pb-2 text-success"
                 ><img
@@ -697,10 +710,10 @@
                   class="me-2"
                 />Enter a Date</label
               >
-              <input type="date" name="date" required />
+              <input type="date" name="date"/>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="timeField">
               <span></span>
               <label class="fw-bold pb-2 text-success"
                 ><img
@@ -711,7 +724,7 @@
                   class="me-2"
                 />Enter a Time</label
               >
-              <input type="time" name="time" required />
+              <input type="time" name="time" />
             </div>
 
             <div
@@ -721,20 +734,23 @@
             ></div>
 
             <!-- NOTE PARAGRAPH START -->
-        <div class="bg-light p-3 mt-4" style="font-size: 0.95rem;">
-        <p class="fw-bold text-black mb-2">Note:</p>
-        <ul class="ps-4 mb-0" style="list-style: none;">
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Toll Fees, Inter-State Permit charges (if any) are extra.</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Driver bata is ₹300/- per day for Round Trip.</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Drop Trips - Driver Bata ₹300. (₹600 for above 400 kms)</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Round Trips - Minimum running must be 250 kms/day. Bengaluru – 300 kms/day.</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Drop Trips - Minimum running must be 130 kms/day.</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />1 day = 1 Calendar day (Midnight 12 to next Midnight 12).</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Waiting Charges: ₹2 per min. (Excludes 30 min for food.)</li>
-            <li><img src="img/cab/car.jpg" width="20" class="me-2" />Luggage Capacity: Sedan - 3 suitcases, SUV - 4 suitcases.</li>
-        </ul>
+        <div class="bg-light p-3 mt-4" style="font-size: 0.95rem;" id="note">
+            <p class="fw-bold text-black mb-2">Note:</p>
+            <ul class="ps-4 mb-0" style="list-style: none;">
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Toll Fees, Inter-State Permit charges (if any) are extra.</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Driver bata is ₹300/- per day for Round Trip.</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Drop Trips - Driver Bata ₹300. (₹600 for above 400 kms)</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Round Trips - Minimum running must be 250 kms/day. Bengaluru – 300 kms/day.</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Drop Trips - Minimum running must be 130 kms/day.</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />1 day = 1 Calendar day (Midnight 12 to next Midnight 12).</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Waiting Charges: ₹2 per min. (Excludes 30 min for food.)</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Luggage Capacity: Sedan - 3 suitcases, SUV - 4 suitcases.</li>
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />GST 5%</li>
+                <!-- <li><img src="img/cab/car.jpg" width="20" class="me-2" />Service Charge ₹250.</li> -->
+                <li><img src="img/cab/car.jpg" width="20" class="me-2" />Vehicle Halting  Charges ( More than one day):- Sedan ₹1200, PS ₹1500, XUV ₹1700 and Tempo Traveler ₹1800</li>                
+            </ul>
         </div>
-<!-- NOTE PARAGRAPH END -->
+      <!-- NOTE PARAGRAPH END -->
 
             <button type="submit" class="btn lnk btn-main bg-btn">
               <span class="circle"></span>BOOK
@@ -1120,19 +1136,32 @@
       ><i class="bi bi-arrow-up"></i
     ></a>
 
-    <script>
-      //cabbooking
-     let pickupCoords = null;
+  <script>
+  let pickupCoords = null;
   let dropCoords = null;
 
-  const rateMap = {
-    Sedan: 10,
-    "Prime Sedan": 12,
-    XUV: 15,
-    "Tempo Traveler": 18,
+  const rateMapOutstation = {
+    Sedan: 13,
+    "Prime Sedan": 14,
+    XUV: 19,
+    "Tempo Traveler": 22,
   };
 
-  const driverBataPerDay = 600;
+  const rateMapLocal = {
+    Sedan: 45,
+    "Prime Sedan": 50,
+    XUV: 55,
+    "Tempo Traveler": 60,
+  };
+
+  const rateMapHourly = {
+    Sedan: 250,
+    "Prime Sedan": 300,
+    XUV: 320,
+    "Tempo Traveler": 350,
+  };
+
+  const driverBataPerDay = 300;
 
   function initializeAutocomplete() {
     const pickupInput = document.getElementById("pickup");
@@ -1168,6 +1197,14 @@
   }
 
   function calculateDistanceAndFare() {
+    const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
+    const label = document.getElementById("fare-estimate");
+
+    if (tripType === "Book Now") {
+      label.style.display = "none";
+      return;
+    }
+
     if (!pickupCoords || !dropCoords) return;
 
     const origin = new google.maps.LatLng(pickupCoords.lat, pickupCoords.lng);
@@ -1185,40 +1222,52 @@
         if (status === "OK") {
           const element = response.rows[0].elements[0];
           if (element.status === "OK") {
-            const distanceText = element.distance.text;
-            const distanceValue = element.distance.value / 1000; // in KM
+            let distanceText = element.distance.text;
+            let distanceValue = element.distance.value / 1000;
             const durationText = element.duration.text;
 
-            const selectedVehicle = document.querySelector(
-              'input[name="vehicleType"]:checked'
-            )?.value;
+            const selectedVehicle = document.querySelector('input[name="vehicleType"]:checked')?.value;
 
-            let baseFare = 0;
-            if (selectedVehicle && rateMap[selectedVehicle]) {
-              baseFare = Math.round(distanceValue * rateMap[selectedVehicle]);
-            }
-
-            const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
             const way = document.getElementById("way")?.value || "";
             const days = parseInt(document.getElementById("days")?.value || 1);
+            const hourPackage = parseInt(document.getElementById("hourPackage")?.value || 1);
             let driverBata = 0;
 
             if (tripType === "Outstation") {
-              driverBata = way === "Round Trip" ? days * driverBataPerDay : driverBataPerDay;
+              if (way === "Round Trip") {
+                distanceValue *= 2;
+                distanceText = `${distanceValue.toFixed(2)} KM (Round Trip)`;
+              }
+              driverBata = days * driverBataPerDay;
+            }
+
+            let selectedRateMap = {};
+            if (tripType === "Outstation") {
+              selectedRateMap = rateMapOutstation;
+            } else if (tripType === "Local") {
+              selectedRateMap = rateMapLocal;
+            } else if (tripType === "Hourly") {
+              selectedRateMap = rateMapHourly;
+            }
+
+            let baseFare = 0;
+            if (selectedVehicle && selectedRateMap[selectedVehicle]) {
+              if (tripType === "Hourly") {
+                baseFare = selectedRateMap[selectedVehicle] * hourPackage;
+              } else {
+                baseFare = Math.round(distanceValue * selectedRateMap[selectedVehicle]);
+              }
             }
 
             const totalFare = baseFare + driverBata;
 
-            const label = document.getElementById("fare-estimate");
             label.innerHTML = `<strong>Approx. Distance:</strong> ${distanceText}<br>
               <strong>Approx. Duration:</strong> ${durationText}<br>
               <strong>Vehicle Type:</strong> ${selectedVehicle}<br>
               <strong>Base Fare:</strong> ₹${baseFare}<br>
-              <strong>Driver Bata:</strong> ₹${driverBata}<br>
               <strong><u>Total Estimated Fare:</u></strong> ₹${totalFare}`;
             label.style.display = "block";
 
-            // Save to hidden input to send in WhatsApp
             document.getElementById("totalFare").value = totalFare;
           } else {
             alert("No route found.");
@@ -1231,33 +1280,48 @@
   }
 
   function toggleFields() {
-    const tripType = document.querySelector('input[name="tripType"]:checked')?.id;
+    const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
+
+    const dateField = document.getElementById("dateField");
+    const timeField = document.getElementById("timeField");
+    const note = document.getElementById("note");
+
+    const isBookNow = tripType === "Book Now";
+    if (dateField) dateField.style.display = isBookNow ? "none" : "block";
+    if (timeField) timeField.style.display = isBookNow ? "none" : "block";
+    if (note) note.style.display = isBookNow ? "none" : "block";
+
     document.getElementById("outstationFields").style.display = "none";
     document.getElementById("roundTripFields").style.display = "none";
     document.getElementById("hourlyFields").style.display = "none";
 
-    // Reset values
     document.getElementById("way").value = "";
     document.getElementById("days").value = "";
     document.getElementById("hourPackage").value = "";
 
     if (tripType === "Outstation") {
       document.getElementById("outstationFields").style.display = "block";
-    } else if (tripType === "hourly") {
+    } else if (tripType === "Hourly") {
       document.getElementById("hourlyFields").style.display = "block";
     }
+
+    if (tripType === "Book Now") {
+      document.getElementById("fare-estimate").style.display = "none";
+    }
+
+    if (pickupCoords && dropCoords) calculateDistanceAndFare();
   }
 
   function showDaysInput() {
     const way = document.getElementById("way").value;
-      document.getElementById("days").value = "";
+    document.getElementById("days").value = "";
 
     if (way === "Round Trip") {
       document.getElementById("roundTripFields").style.display = "block";
     } else {
       document.getElementById("roundTripFields").style.display = "none";
     }
-    calculateDistanceAndFare(); // recalculate if needed
+    calculateDistanceAndFare();
   }
 
   function getGeolocation() {
@@ -1276,68 +1340,70 @@
       );
     }
   }
-function handleFormSubmit(event) {
-  event.preventDefault();
 
-  const form = event.target;
+  function handleFormSubmit(event) {
+    event.preventDefault();
 
-  const name = form.name.value;
-  const phone = form.phone.value;
-  const pickup = form.pick.value;
-  const drop = form.drop.value;
-  const email = form.email.value;
-  const vehicleType = form.vehicleType.value;
-  const tripType = form.tripType.value;
-  const date = form.date.value;
-  const time = form.time.value;
+    const form = event.target;
 
-  // Additional fields (optional)
-  const way = form.way ? form.way.value : '';
-  const days = form.days ? form.days.value : '';
-  const hourPackage = form.hourPackage ? form.hourPackage.value : '';
+    const name = form.name.value;
+    const phone = form.phone.value;
+    const pickup = form.pick.value;
+    const drop = form.drop.value;
+    const email = form.email.value;
+    const vehicleType = form.vehicleType.value;
+    const tripType = form.tripType.value;
+    const date = form.date.value;
+    const time = form.time.value;
 
-  // Construct WhatsApp message
-  let message = `*Cab Booking Details*%0A`;
-  message += `Name: ${name}%0A`;
-  message += `Phone: ${phone}%0A`;
-  message += `Pickup: ${pickup}%0A`;
-  message += `Drop: ${drop}%0A`;
-  message += `Email: ${email}%0A`;
-  message += `Vehicle Type: ${vehicleType}%0A`;
-  message += `Trip Type: ${tripType}%0A`;
-  message += `Date: ${date}%0A`;
-  message += `Time: ${time}%0A`;
+    const way = form.way ? form.way.value : '';
+    const days = form.days ? form.days.value : '';
+    const hourPackage = form.hourPackage ? form.hourPackage.value : '';
 
-  if (tripType === "Outstation") {
-    message += `Way: ${way}%0A`;
-    if (way === "Round Trip") {
-      message += `Days: ${days}%0A`;
+    let message = `*Cab Booking Details*%0A`;
+    message += `Name: ${name}%0A`;
+    message += `Phone: ${phone}%0A`;
+    message += `Pickup: ${pickup}%0A`;
+    message += `Drop: ${drop}%0A`;
+    message += `Email: ${email}%0A`;
+    message += `Vehicle Type: ${vehicleType}%0A`;
+    message += `Trip Type: ${tripType}%0A`;
+    message += `Date: ${date}%0A`;
+    message += `Time: ${time}%0A`;
+
+    if (tripType === "Outstation") {
+      message += `Way: ${way}%0A`;
+      if (way === "Round Trip") {
+        message += `Days: ${days}%0A`;
+      }
     }
+
+    if (tripType === "Hourly") {
+      message += `Hour Package: ${hourPackage}%0A`;
+    }
+
+    const whatsappNumber = "919797977763";
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+    window.open(whatsappURL, "_blank");
+    form.reset();
+    document.getElementById("fare-estimate").style.display = "none";
   }
 
-  if (tripType === "Hourly") {
-    message += `Hour Package: ${hourPackage}%0A`;
-  }
-
-  // WhatsApp number (add your number here)
-  const whatsappNumber = "919797977763"; // change to your number with country code
-
-  const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
-
-  window.open(whatsappURL, "_blank");
-
-  form.reset();
-
-}
-
-
-  // Auto-recalculate fare when trip or vehicle changes
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('input[name="vehicleType"], input[name="tripType"], #way, #days').forEach(el => {
+    document.querySelectorAll('input[name="vehicleType"], input[name="tripType"], #way, #days, #hourPackage').forEach(el => {
       el.addEventListener("change", () => {
         if (pickupCoords && dropCoords) calculateDistanceAndFare();
       });
     });
+
+    //Trigger immediately while typing in days field
+    const daysInput = document.getElementById("days");
+    if (daysInput) {
+      daysInput.addEventListener("input", () => {
+        if (pickupCoords && dropCoords) calculateDistanceAndFare();
+      });
+    }
   });
 
       // Get visit count from localStorage
